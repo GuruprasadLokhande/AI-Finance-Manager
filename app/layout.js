@@ -18,7 +18,7 @@ export default function RootLayout({ children }) {
           <Header />
           <main className="min-h-screen">{children}</main>
           {/* Footer */}
-          <footer className="bg-blue-500 py-5">
+          <footer className="bg-blue-50 py-12">
             <div className="container mx-auto text-center px-4 text-gray-600">
               <p>© 2025 AI Finance Manager. All rights reserved.</p>
             </div>
