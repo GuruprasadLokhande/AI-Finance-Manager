@@ -2,6 +2,7 @@
 
 import { db } from "@/lib/prisma";
 import { auth } from "@clerk/nextjs/server";
+import { Select } from "@radix-ui/react-select";
 import { revalidatePath } from "next/cache";
 
 const serializeTransaction = (obj) => {
@@ -10,6 +11,12 @@ const serializeTransaction = (obj) => {
   if (obj.balance) {
     serialized.balance = obj.balance.toNumber();
   }
+
+  if (obj.amount) {
+    serialized.amount = obj.amount.toNumber();
+  }
+  return serialized;
+
 };
 export async function createAccount(data) {
   try {
@@ -61,3 +68,29 @@ export async function createAccount(data) {
     throw new Error(error.message);
   }
 }
+
+export async function getUserAccount() {
+  const { userId } = await auth();
+  if (!userId) throw new Error("Unauthorized");
+
+  const user = await db.user.findUnique({ where: { clerkUserId: userId } });
+
+  if (!user) {
+    throw new Error("User already exists");
+  }
+
+  const accounts = await db.account.findMany({
+    where: { userId: user.id },
+    orderBy: { createdAt: "desc" },
+    include: {
+      _count: {
+        select: { // Fixed 'Select' to 'select'
+          transactions: true, // Ensure 'transactions' matches your Prisma schema
+        },
+      },
+    },
+  });
+  
+  const serializedAccount = accounts.map(serializeTransaction);
+  return serializedAccount;
+}  
