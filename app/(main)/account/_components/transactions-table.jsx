@@ -213,6 +213,7 @@ const TransactionTable = ({ transactions }) => {
               <SelectItem value="non-recurring">Non-Recurring Only</SelectItem>
             </SelectContent>
           </Select>
+          {/* Bulk Actions */}
           {selectedIds.length > 0 && (
             <div className="flex items-center gap-2">
               <Button
@@ -220,8 +221,8 @@ const TransactionTable = ({ transactions }) => {
                 size="sm"
                 onClick={handleBulkDelete}
               >
-                <Trash className="h-4 w-4 mr-2" /> Delete Selected (
-                {selectedIds.length})
+                <Trash className="h-4 w-4 mr-2" />
+                Delete Selected ({selectedIds.length})
               </Button>
             </div>
           )}
@@ -419,3 +420,6 @@ const TransactionTable = ({ transactions }) => {
 };
 
 export default TransactionTable;
+
+
+
