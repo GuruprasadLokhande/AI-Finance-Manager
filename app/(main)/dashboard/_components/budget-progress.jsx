@@ -22,9 +22,15 @@ const BudgetProgress = ({ initialBudget, currentExpenses }) => {
     initialBudget?.amount?.toString() || ""
   );
 
-  const percentUsed = initialBudget
-    ? (currentExpenses / initialBudget.amount) * 100
+  // const percentUsed = initialBudget
+  //   ? (currentExpenses / initialBudget.amount) * 100
+  //   : 0;
+
+    const percentUsed = initialBudget
+    ? Math.min(( initialBudget.amount / currentExpenses) * 100, 100)
     : 0;
+  
+
 
   const {
     loading: isLoading,
@@ -61,6 +67,8 @@ const BudgetProgress = ({ initialBudget, currentExpenses }) => {
     setIsEditing(false);
   };
 
+
+  
   return (
     <Card>
       <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
@@ -100,9 +108,9 @@ const BudgetProgress = ({ initialBudget, currentExpenses }) => {
               <>
                 <CardDescription>
                   {initialBudget
-                    ? `₹${currentExpenses.toFixed(
+                    ? `₹${initialBudget.amount.toFixed(
                         2
-                      )} of ₹${initialBudget.amount.toFixed(2)} spent`
+                      )} of ₹${currentExpenses.toFixed(2)} spent`
                     : "No budget set"}
                 </CardDescription>
                 <Button
@@ -133,7 +141,7 @@ const BudgetProgress = ({ initialBudget, currentExpenses }) => {
               }`}
             />
             <p className="text-xs text-muted-foreground text-right">
-              {percentUsed.toFixed(2)}% used
+              {percentUsed.toFixed(1)}% used
             </p>
           </div>
         )}
