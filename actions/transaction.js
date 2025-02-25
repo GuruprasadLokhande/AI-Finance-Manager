@@ -1,6 +1,8 @@
 "use server";
 
+import aj from "@/lib/arcjet";
 import { db } from "@/lib/prisma";
+import { request } from "@arcjet/next";
 import { auth } from "@clerk/nextjs/server";
 import { revalidatePath } from "next/cache";
 
@@ -14,7 +16,31 @@ export async function createTransaction(data) {
     const { userId } = await auth();
     if (!userId) throw new Error("Unauthorized");
 
-    //Arcjet to add rate limit
+    //Get Request data for Arcjet
+    const req = await request();
+
+    // Check rate limit
+    const decision = await aj.protect(req, {
+      userId,
+      requested: 1, // Specify how many tokens to consume
+    });
+
+    if (decision.isDenied()) {
+      if (decision.reason.isRateLimit()) {
+        const { remaining, reset } = decision.reason;
+        console.error({
+          code: "RATE_LIMIT_EXCEEDED",
+          details: {
+            remaining,
+            resetInSeconds: reset,
+          },
+        });
+
+        throw new Error("Too many requests. Please try again later.");
+      }
+
+      throw new Error("Request blocked");
+    }
 
     const user = await db.user.findUnique({
       where: { clerkUserId: userId },
@@ -68,26 +94,24 @@ export async function createTransaction(data) {
   }
 }
 
-
-
 // Helper function to calculate next recurring date
 function calculateNextRecurringDate(startDate, interval) {
-    const date = new Date(startDate);
-  
-    switch (interval) {
-      case "DAILY":
-        date.setDate(date.getDate() + 1);
-        break;
-      case "WEEKLY":
-        date.setDate(date.getDate() + 7);
-        break;
-      case "MONTHLY":
-        date.setMonth(date.getMonth() + 1);
-        break;
-      case "YEARLY":
-        date.setFullYear(date.getFullYear() + 1);
-        break;
-    }
-  
-    return date;
+  const date = new Date(startDate);
+
+  switch (interval) {
+    case "DAILY":
+      date.setDate(date.getDate() + 1);
+      break;
+    case "WEEKLY":
+      date.setDate(date.getDate() + 7);
+      break;
+    case "MONTHLY":
+      date.setMonth(date.getMonth() + 1);
+      break;
+    case "YEARLY":
+      date.setFullYear(date.getFullYear() + 1);
+      break;
   }
+
+  return date;
+}
