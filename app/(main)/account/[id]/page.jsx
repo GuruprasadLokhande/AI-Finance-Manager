@@ -17,7 +17,7 @@ const AccountPage = async ({ params }) => {
       <div className="flex gap-4 items-end justify-between">
         {" "}
         <div>
-          <h1 className="text-5xl sm:text-6xl font-bold tracking-tight gradient-title capitalize">
+          <h1 className="text-4xl sm:text-6xl font-bold tracking-tight gradient-title capitalize">
             {account.name}
           </h1>
           <p className="text-muted-foreground">
@@ -26,7 +26,7 @@ const AccountPage = async ({ params }) => {
             Account
           </p>
         </div>
-        <div className="text-right pb-2">
+        <div className="text-right pb-2 ">
           <div className="text-xl sm:text-2xl font-bold">
             ₹{parseFloat(account.balance).toFixed(2)}
           </div>
@@ -36,11 +36,8 @@ const AccountPage = async ({ params }) => {
         </div>
       </div>
       {/* Chart Section */}
-      <Suspense
-        fallback={<BarLoader className="mt-4" width={"100%"} color="#9333ea" />}
-      >
+      
         <AccountChart transactions={transactions} />
-      </Suspense>
 
       {/* Transaction Table */}
       <Suspense

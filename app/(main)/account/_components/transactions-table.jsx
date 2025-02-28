@@ -188,55 +188,53 @@ const TransactionTable = ({ transactions }) => {
             className="pl-8"
           />
         </div>
-        <div className="flex gap-2">
-          <Select value={typeFilter} onValueChange={setTypeFilter}>
-            <SelectTrigger className="w-[130px]">
-              <SelectValue placeholder="All Types" />
-            </SelectTrigger>
-            <SelectContent>
-              <SelectItem value="INCOME">Income</SelectItem>
-              <SelectItem value="EXPENSE">Expense</SelectItem>
-            </SelectContent>
-          </Select>
+        <div className="flex flex-col sm:flex-row gap-2">
+  <div className="flex gap-2">
+    <Select value={typeFilter} onValueChange={setTypeFilter}>
+      <SelectTrigger className="w-[130px]">
+        <SelectValue placeholder="All Types" />
+      </SelectTrigger>
+      <SelectContent>
+        <SelectItem value="INCOME">Income</SelectItem>
+        <SelectItem value="EXPENSE">Expense</SelectItem>
+      </SelectContent>
+    </Select>
 
-          <Select
-            value={recurringFilter}
-            onValueChange={(value) => {
-              setRecurringFilter(value);
-            }}
-          >
-            <SelectTrigger className="w-[180px]">
-              <SelectValue placeholder="All Transactions" />
-            </SelectTrigger>
-            <SelectContent>
-              <SelectItem value="recurring">Recurring Only</SelectItem>
-              <SelectItem value="non-recurring">Non-Recurring Only</SelectItem>
-            </SelectContent>
-          </Select>
-          {/* Bulk Actions */}
-          {selectedIds.length > 0 && (
-            <div className="flex items-center gap-2">
-              <Button
-                variant="destructive"
-                size="sm"
-                onClick={handleBulkDelete}
-              >
-                <Trash className="h-4 w-4 mr-2" />
-                Delete Selected ({selectedIds.length})
-              </Button>
-            </div>
-          )}
-          {(searchTerm || typeFilter || recurringFilter) && (
-            <Button
-              variant="outline"
-              size="icon"
-              onClick={handleClearFilters}
-              title="clear Filter"
-            >
-              <X className="h-4 w-5" />
-            </Button>
-          )}
-        </div>
+    <Select value={recurringFilter} onValueChange={setRecurringFilter}>
+      <SelectTrigger className="w-[180px]">
+        <SelectValue placeholder="All Transactions" />
+      </SelectTrigger>
+      <SelectContent>
+        <SelectItem value="recurring">Recurring Only</SelectItem>
+        <SelectItem value="non-recurring">Non-Recurring Only</SelectItem>
+      </SelectContent>
+    </Select>
+  </div>
+
+  {/* Bulk Actions & Clear Filter (Placed on the next row in mobile) */}
+  <div className="flex gap-2 mt-2 sm:mt-0">
+    {selectedIds.length > 0 && (
+      <Button variant="destructive" size="sm" onClick={handleBulkDelete}>
+        <Trash className="h-4 w-4 mr-2" />
+        Delete Selected ({selectedIds.length})
+      </Button>
+    )}
+
+    {(searchTerm || typeFilter || recurringFilter) && (
+      <Button
+        variant="outline"
+        size="sm"
+        onClick={handleClearFilters}
+        title="Clear Filter"
+        className="flex items-center gap-1"
+      >
+        <X className="h-4 w-5" />
+        <span className="sm:hidden">Remove Filter</span>
+      </Button>
+    )}
+  </div>
+</div>
+
       </div>
       {/* Transactions */}
       <div className="rounded-md border">
