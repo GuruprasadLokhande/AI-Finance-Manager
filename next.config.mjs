@@ -14,6 +14,10 @@ const nextConfig = {
       bodySizeLimit: "5mb",
     },
   },
+  
+  // Suppress hydration warnings from browser extensions
+  reactStrictMode: false,
+  suppressHydrationWarning: true,
 };
 
 export default nextConfig;

@@ -14,7 +14,10 @@ export default function RootLayout({ children }) {
   return (
     <ClerkProvider>
       <html lang="en">
-        <body className={`${inter.className}`}>
+        <body 
+          className={`${inter.className}`}
+          suppressHydrationWarning={true}
+        >
           {/* Header */}
           <Header />
           <main className="min-h-screen my-32">{children}</main>
